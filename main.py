@@ -24,17 +24,17 @@ async def verify_webhook(request: Request):
     token = params.get("hub.verify_token")
     challenge = params.get("hub.challenge")
 
-    if (
-        mode == "subscribe"
-        and token == VERIFY_TOKEN
-        and challenge
-    ):
+    print("=== WEBHOOK VERIFICATION ===")
+    print(f"Mode received: {mode!r}")
+    print(f"Token received: {'present' if token else 'missing'}")
+    print(f"Challenge received: {challenge!r}")
+    print(f"Expected token configured: {bool(VERIFY_TOKEN)}")
+    print(f"Token matches: {token == VERIFY_TOKEN}")
+
+    if mode == "subscribe" and token == VERIFY_TOKEN and challenge is not None:
         return PlainTextResponse(challenge)
 
-    return PlainTextResponse(
-        "Verification failed",
-        status_code=403
-    )
+    return PlainTextResponse("Verification failed", status_code=403)
 
 
 @app.post("/webhook")
